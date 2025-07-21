@@ -1,0 +1,73 @@
+Structure complète du workflow n8n
+1. Trigger - Webhook
+Reçoit la candidature du candidat (formulaire + fichier CV uploadé).
+
+Paramètres : méthode POST, données JSON + fichier CV.
+
+2. Node - Extract Text from CV
+Récupère le texte brut du fichier CV (PDF, DOCX...).
+
+Plusieurs options :
+
+Utiliser un service tiers d’OCR / extraction (ex : Cloud OCR API).
+
+Ou un node custom pour extraire texte si simple (ex : texte déjà dans JSON).
+
+3. Node - AI Classification (HTTP Request)
+Envoie le texte du CV à DeepSeek (ou autre LLM) via HTTP Request.
+
+Prompt : “Classifie ce CV en IT, RH ou Multimédia.”
+
+Output : classification sous forme texte (ex : “IT”).
+
+4. Node - Set Responsable Email (Switch ou Function)
+Selon la classification reçue, associe le mail du responsable :
+
+IT → x.it@entreprise.com
+
+RH → y.rh@entreprise.com
+
+Multimédia → z.multimedia@entreprise.com
+
+5. Node - Send Email
+Envoie la candidature + texte résumé au responsable concerné.
+
+Paramètres :
+
+Destinataire = email du responsable
+
+Sujet = “Nouvelle candidature stage [Domaine]”
+
+Corps = infos du candidat + lien/download CV + résumé
+
+6. Node - (Optionnel) Slack Notification
+Si tu souhaites, notifie sur Slack le responsable ou l’équipe RH de la réception.
+
+7. Node - Stockage / Historisation (Google Sheets / DB)
+Sauvegarde chaque candidature avec la classification, date, statut, email envoyé etc.
+
+Schéma résumé
+plaintext
+Copier
+Modifier
+Webhook → Extract Text CV → AI Classification → Set Email Responsable → Send Email → (Slack notif) → Historisation
+Points techniques importants
+Le prompt LLM doit être clair et concis, par exemple :
+
+text
+Copier
+Modifier
+Classifie ce CV dans l’un des domaines suivants : IT, RH, Multimédia.
+Répond uniquement par le nom du domaine.
+Le mapping email peut se faire via un Switch node ou via un Function node avec un objet JS :
+
+javascript
+Copier
+Modifier
+const mapResponsables = {
+  IT: "x.it@entreprise.com",
+  RH: "y.rh@entreprise.com",
+  Multimédia: "z.multimedia@entreprise.com"
+};
+return [{ email: mapResponsables[$json["classification"]] || "default@entreprise.com" }];
+La gestion du fichier CV peut être faite via un Webhook multipart ou en base64 selon la source.
