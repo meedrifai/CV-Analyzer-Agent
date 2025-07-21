@@ -1,0 +1,6 @@
+2025-07-21 11:57:27,003 - app.services.webhook_handler - INFO - Fichier sauvegardé : uploads\269cf773-3973-40ad-9357-d5be80e8c32a.pdf
+2025-07-21 11:57:27,004 - app.main - INFO - Début du traitement du CV : uploads\269cf773-3973-40ad-9357-d5be80e8c32a.pdf
+2025-07-21 11:57:30,409 - app.models.cv_classifier - INFO - CV classifié comme : IT
+2025-07-21 11:57:32,736 - app.services.email_service - INFO - Email envoyé avec succès à rifaii.mohameed@gmail.com pour le domaine IT
+2025-07-21 11:57:32,737 - app.main - INFO - Pipeline terminé avec succès - Domaine : IT
+2025-07-21 11:57:32,738 - app.services.webhook_handler - INFO - Fichier temporaire supprimé : uploads\269cf773-3973-40ad-9357-d5be80e8c32a.pdf
